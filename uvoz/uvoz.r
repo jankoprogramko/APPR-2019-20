@@ -14,26 +14,33 @@ library(digest)
 library(mosaic)
 library(reshape2)
 
-#uvoz tabele vseh igralcev, vsi statisticni podatki skupaj
+#UVOZ TABELE VSEH PODATKOV
 data1 <- read.csv("players_raw.csv")
 #izločevanje nepomembnih podatkov
-igralci_skupaj <- data1[c(19, 42, 47, 31, 22, 1, 6, 21, 41, 58, 40, 36, 37 )]
-igralci_skupaj2 = igralci_skupaj %>% mutate(team = ekipe[team])
-#vektor z imeni ekip
+
+#pomožen vektor z imeni ekip
 ekipe <- c("ARS", "BOU", "BRI", "BUR", "CAR", "CHE", "CRY", "EVE", "FUL", "HUD", "LEI", "LIV", "MCI", "MUN", "NEW", "SOU", "SPU", "WAT", "WSH", "WOL")
 
 
+igralci_skupaj <- data1[c(19, 42, 47)] %>% mutate(team = ekipe[team])
 
-#uvoz podatkov za igralce, statisticni podatki loceni po krogih
+
+
+#UVOZ PODATKOV ZA VSAK KROG POSEBEJ
 data2 <- read.csv("merged_gw.csv")
+
 #izlocevanje nepomembnih podatkov
 krogi <-data2[c(-6, -7, -11, -13, -14, -17, -21, -22, -23, -25, -26, -27, -28, -41, -47, -48, -49, -50, -51, -52, -56)]
+
 #locevanje stolpca name na tri različne stolpce
 krogi2 <- separate(krogi,1, c("ime", "priimek", "id"), "_")
+
 #izločitev stolpca z imenom id
 krogi3 <- krogi2[-3]
+
 #sprememba stolpca opponent team
 krogi4 = krogi3 %>% mutate(opponent_team = ekipe[opponent_team])
+
 #pretvorba v tidy data
 krogi5 <- melt(krogi4, id.vars = c("ime","priimek","round","opponent_team","was_home"), measure.vars = names(krogi3)[c(-1,-2,-20,-27,-34)], variable.name = "stat_podatek", value.name = "vrednost")
 

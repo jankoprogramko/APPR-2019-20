@@ -13,14 +13,21 @@ library(ggplot2)
 library(digest)
 library(mosaic)
 
-#Ustvarjanje novih tabel
+#USTVARJANJE NOVIH TABEL
+
+#tabela ki poodatke za vse kroge komulativno sesteje
 kom_tabela <- krogi5 %>% group_by(ime,priimek,stat_podatek) %>% summarise(vrednost=sum(vrednost))
+
+#tabela s stevilom povprečnih celotnih tekem, ki jih je igralec odigral
+odigranih_90 <- filter(kom_tabela, stat_podatek == "minutes") %>% summarise(st_90 = round(vrednost/90, digits=2))
+
+
 #kom_tabela_vec_kot_90 <- kom_tabela %>% filter(stat_podatek == "minutes")
 #povp_90 <- kom_tabela %>% 
 #  group_by(ime,priimek,stat_podatek) %>% summarise(vrednost=vrednost/stat_podatek["minutes"]/90)
 #salah <- filter(kom_tabela, priimek == "Salah")
 #odigrane_min <- kom_tabela %>% filter(stat_podatek = minutes) %>% group_by(ime, priimek, stat_podatek) %>% summarise(vrednost=vrednost)
-odigranih_90 <- filter(kom_tabela, stat_podatek == "minutes") %>% summarise(st_90 = round(vrednost/90, digits=2))
+
 
 # # Uvozimo zemljevid.
 # zemljevid <- uvozi.zemljevid("http://baza.fmf.uni-lj.si/OB.zip", "OB",
