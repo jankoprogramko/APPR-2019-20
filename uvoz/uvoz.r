@@ -15,7 +15,9 @@ library(mosaic)
 library(reshape2)
 
 #UVOZ TABELE VSEH PODATKOV
-data1 <- read.csv("players_raw.csv")
+#data1 <- read.csv("players_raw.csv")
+data1 <- read_csv("podatki/players_raw.csv", locale=locale(encoding="UTF-8"))
+
 #izločevanje nepomembnih podatkov
 
 #pomožen vektor z imeni ekip
@@ -27,7 +29,10 @@ igralci_skupaj <- data1[c(19, 42, 47)] %>% mutate(team = ekipe[team])
 
 
 #UVOZ PODATKOV ZA VSAK KROG POSEBEJ
-data2 <- read.csv("merged_gw.csv")
+#data2 <- read.csv("merged_gw.csv")
+data2 <- read_csv("podatki/merged_gw.csv", locale=locale(encoding="Windows-1252"),
+                  col_types=cols("was_home"=col_logical()))
+
 
 #izlocevanje nepomembnih podatkov
 krogi <-data2[c(-6, -7, -11, -13, -14, -17, -21, -22, -23, -25, -26, -27, -28, -41, -47, -48, -49, -50, -51, -52, -56)]
@@ -35,11 +40,11 @@ krogi <-data2[c(-6, -7, -11, -13, -14, -17, -21, -22, -23, -25, -26, -27, -28, -
 #locevanje stolpca name na tri različne stolpce
 krogi2 <- separate(krogi,1, c("ime", "priimek", "id"), "_")
 
-#izločitev stolpca z imenom id
-krogi3 <- krogi2[-3]
+#izločitev stolpca z imenom id, sprememba stolpca opponent team
+krogi3 <- krogi2[-3] %>% mutate(opponent_team = ekipe[opponent_team])
 
 #sprememba stolpca opponent team
-krogi4 = krogi3 %>% mutate(opponent_team = ekipe[opponent_team])
+#krogi4 = krogi3 %>% mutate(opponent_team = ekipe[opponent_team])
 
 #pretvorba v tidy data
 krogi5 <- melt(krogi4, id.vars = c("ime","priimek","round","opponent_team","was_home"), measure.vars = names(krogi3)[c(-1,-2,-20,-27,-34)], variable.name = "stat_podatek", value.name = "vrednost")
